@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/emilioziniades/interpreterbook/evaluator"
 	"github.com/emilioziniades/interpreterbook/lexer"
@@ -25,21 +26,34 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		line := scanner.Text()
-		l := lexer.New(line)
-		p := parser.New(l)
+		evaluateText(line, env, out)
+	}
+}
 
-		program := p.ParseProgram()
-		if len(p.Errors()) != 0 {
-			printParseErrors(out, p.Errors())
-			continue
-		}
+func EvaluateFile(filename string, out io.Writer) {
+	file, err := os.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+	env := object.NewEnvironment()
+	evaluateText(string(file), env, out)
+}
 
-		evaluated := evaluator.Eval(program, env)
-		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
-			io.WriteString(out, "\n")
-		}
+func evaluateText(text string, env *object.Environment, out io.Writer) {
 
+	l := lexer.New(text)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		printParseErrors(out, p.Errors())
+		return
+	}
+
+	evaluated := evaluator.Eval(program, env)
+	if evaluated != nil {
+		io.WriteString(out, evaluated.Inspect())
+		io.WriteString(out, "\n")
 	}
 }
 

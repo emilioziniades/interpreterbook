@@ -9,6 +9,11 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 1 {
+		repl.EvaluateFile(os.Args[1], os.Stdout)
+		return
+	}
+
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
