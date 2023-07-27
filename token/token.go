@@ -31,12 +31,14 @@ const (
 	COMMA     TokenType = ","
 	SEMICOLON TokenType = ";"
 
-	LPAREN TokenType = "("
-	RPAREN TokenType = ")"
-	LBRACE TokenType = "{"
-	RBRACE TokenType = "}"
-	LT     TokenType = "<"
-	GT     TokenType = ">"
+	LPAREN   TokenType = "("
+	RPAREN   TokenType = ")"
+	LBRACE   TokenType = "{"
+	RBRACE   TokenType = "}"
+	LT       TokenType = "<"
+	GT       TokenType = ">"
+	LBRACKET TokenType = "["
+	RBRACKET TokenType = "]"
 
 	// Keywords
 	FUNCTION TokenType = "FUNCTION"
