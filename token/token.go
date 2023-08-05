@@ -49,6 +49,8 @@ const (
 	RETURN   TokenType = "RETURN"
 	TRUE     TokenType = "TRUE"
 	FALSE    TokenType = "FALSE"
+
+	MACRO TokenType = "MACRO"
 )
 
 var keywords = map[string]TokenType{
@@ -59,6 +61,7 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 	"true":   TRUE,
 	"false":  FALSE,
+	"macro":  MACRO,
 }
 
 func LookupIdent(ident string) TokenType {
