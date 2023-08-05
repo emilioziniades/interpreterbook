@@ -17,6 +17,7 @@ const PROMPT = ">> "
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnvironment()
+	macroEnv := object.NewEnvironment()
 
 	for {
 		fmt.Fprintf(out, PROMPT)
@@ -26,7 +27,7 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		line := scanner.Text()
-		evaluateText(line, env, out)
+		evaluateText(line, env, macroEnv, out)
 	}
 }
 
@@ -36,10 +37,11 @@ func EvaluateFile(filename string, out io.Writer) {
 		panic(err)
 	}
 	env := object.NewEnvironment()
-	evaluateText(string(file), env, out)
+	macroEnv := object.NewEnvironment()
+	evaluateText(string(file), env, macroEnv, out)
 }
 
-func evaluateText(text string, env *object.Environment, out io.Writer) {
+func evaluateText(text string, env *object.Environment, macroEnv *object.Environment, out io.Writer) {
 
 	l := lexer.New(text)
 	p := parser.New(l)
@@ -50,7 +52,10 @@ func evaluateText(text string, env *object.Environment, out io.Writer) {
 		return
 	}
 
-	evaluated := evaluator.Eval(program, env)
+	evaluator.DefineMacros(program, macroEnv)
+	expanded := evaluator.ExpandMacros(program, macroEnv)
+
+	evaluated := evaluator.Eval(expanded, env)
 	if evaluated != nil {
 		io.WriteString(out, evaluated.Inspect())
 		io.WriteString(out, "\n")
